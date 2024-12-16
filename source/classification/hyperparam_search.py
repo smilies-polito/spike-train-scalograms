@@ -1130,6 +1130,7 @@ def Testing_best_model():
     
     
     model_path = os.path.join(model_folder, 'best_model.pkl')
+    estimator_path = os.path.join(model_folder, 'best_estimator.pkl')
 
     #split train and test   #fare un chekc qui later
     X_train, X_test, y_train_class_names, y_test_class_names = train_test_split(all_ids, all_classes, test_size=0.2, random_state=42, stratify=all_classes)
@@ -1138,7 +1139,7 @@ def Testing_best_model():
     with open(model_path, 'rb') as f:
        best_model  = pickle.load(f)
 
-    with open(model_path, 'rb') as f:
+    with open(estimator_path, 'rb') as f:
        best_estimator  = pickle.load(f)
 
     batch_size_best = best_estimator.params['batch_size']
