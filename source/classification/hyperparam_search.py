@@ -263,7 +263,7 @@ def BayesSearch():
         cv = cv_inner,
         random_state=42
         )
-        
+    
     opt.fit(X_train, y_train_class_names)
         
     best_estimator = opt.best_estimator_
@@ -1141,6 +1141,8 @@ def Testing_best_model():
     with open(model_path, 'rb') as f:
        best_estimator  = pickle.load(f)
 
+    batch_size_best = best_estimator.params['batch_size']
+    best_params = best_estimator.params
 
     test_whole_generator = generate_arrays_for_prediction(X_test, available_ids_dict,  batch_size_best) 
     
@@ -1213,11 +1215,8 @@ def Testing_best_model():
 if __name__ == "__main__":
     print('Launching main')
     global model_no
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         model_no = int(sys.argv[1])
         test = bool(sys.argv[2])
     main(test)
-
-
-
 
