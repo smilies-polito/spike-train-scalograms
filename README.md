@@ -1,6 +1,60 @@
 # spike-trains-scalograms
 
 
+## Experimental setup
+
+Follow these steps to setup for reproducing the experiments provided in _Martini et al., 2023_.
+1) Install `Singularity` from https://docs.sylabs.io/guides/3.0/user-guide/installation.html:
+	* Install `Singularity` release 3.10.2, with `Go` version 1.18.4
+	* Suggestion: follow instructions provided in _Download and install singularity from a release_ section after installing `Go`
+	* Install dependencies from: https://docs.sylabs.io/guides/main/admin-guide/installation.html
+2) Clone the STS repository in your home folder
+```
+git clone https://github.com/smilies-polito/spike-trains-scalograms.git
+```
+3) Move to the NSS source/classification subfolder, and build the singularity container with 
+```
+cd spike-trains-scalograms/source/classification
+sudo singularity build ../STS_pytorch.sif ../STS.def
+```
+or
+```
+cd NSS/source
+singularity build --fakeroot ../STS_pytorch.sif ../STS.def
+```
+
+# Reproducing NSS analysis
+
+In _Martini et al., 2023_, NSS validation relies on multimodal analysis over both datasets:
+
+* **Hard Validation**: A EP and transcriptomic joint and multimodal analysis over _PatchSeqDataset_ 
+* **Soft Validation**: A EP and cell-type-based joint analysis over _PatchClampDataset_ 
+
+
+## Reproducing the analysis running the STS Singularity container
+
+
+### Testing
+```
+singularity shell --nv ../STS_pytorch.sif
+python3 sts_pipeline.py <model> True
+```
+model can assume values between 1 and 6, as follow:
+
+1 - ResNet18
+
+2 - VGG16
+
+3 - Incep_v3
+
+4 - MobileNet_v2
+
+5 - DenseNet121
+
+6 - DenseNet121-finetuning
+
+
+
 
 ## Getting started
 
