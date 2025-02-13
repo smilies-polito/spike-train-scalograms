@@ -1,9 +1,37 @@
 # spike-trains-scalograms
+This repository contains the code of the Spike Train Scalograms (STS) pipeline for neuronal cell types classification. The STS pipeline combines fine-tuned Convolutional Neural Networks (CNN) with scalograms of spike trains obtained through Continuous Wavelet Transform (CWT) to classify neurons from raw Electrophysiological (EP) recordings rather than human-knowledge-based features.
+
+## Release notes
+
+STS v1.0: 
+
+* First release of STS.
+
+## How to cite
+
+### STS Primary publication
+
+* Amprimo, G., Martini, L., Bilir, B., Bardini, R., Savino, A., Olmo, G., Di Carlo, S., Spike Train Scalograms (STS): a Deep Learning Classification Pipeline
+for Neuronal Cell Types, 2025 (submitted to IEEE EMBC 2025).
+
+STS relies on two datasets of murine cortical interneurons.
+
+### PatchSeqDataset
+It leverages the patch-seq technique, that combines patch-clamp with single-cell RNA-Seq (scRNA-Seq) to collect EP and transcriptomic profiles of 4,200 mouse visual cortical GABAergic interneurons, reconstructing the morphological conformation of 517 of them. Primary publication:
+
+* Gouwens, N. W., Sorensen, S. A., Baftizadeh, F., Budzillo, A., Lee, B. R., Jarsky, T., ... & Zeng, H. (2020). Integrated morphoelectric and transcriptomic classification of cortical GABAergic cells. Cell, 183(4), 935-953, https://doi.org/10.1016/j.cell.2020.09.057.
+
+
+### PatchClampDataset
+It provides EP data from 1,938 neurons of adult mouse visual cortical neurons and morphological reconstructions for 461 of them. Primary publication:
+
+* Gouwens, N.W., Sorensen, S.A., Berg, J. et al. Classification of electrophysiological and morphological neuron types in the mouse visual cortex. Nat Neurosci 22, 1182–1195 (2019), https://doi.org/10.1038/s41593-019-0417-0.
+
 
 
 ## Experimental setup
 
-Follow these steps to setup for reproducing the experiments provided in _Martini et al., 2023_.
+Follow these steps to setup for reproducing the experiments provided in _Amprimo et al., 2025_.
 1) Install `Singularity` from https://docs.sylabs.io/guides/3.0/user-guide/installation.html:
 	* Install `Singularity` release 3.10.2, with `Go` version 1.18.4
 	* Suggestion: follow instructions provided in _Download and install singularity from a release_ section after installing `Go`
@@ -12,136 +40,140 @@ Follow these steps to setup for reproducing the experiments provided in _Martini
 ```
 git clone https://github.com/smilies-polito/spike-trains-scalograms.git
 ```
-3) Move to the NSS source/classification subfolder, and build the singularity container with 
+
+3) Move to the spike-train-scalograms source subfolder, and build the singularity container with 
 ```
-cd spike-trains-scalograms/source/classification
-sudo singularity build ../STS_pytorch.sif ../STS.def
+cd spike-trains-scalograms/source
+sudo singularity build STS.sif STS.def
 ```
 or
 ```
-cd NSS/source
-singularity build --fakeroot ../STS_pytorch.sif ../STS.def
+cd spike-trains-scalograms/source
+singularity build --fakeroot STS.sif STS.def
 ```
 
-# Reproducing NSS analysis
+5) The STS pipeline exploits the Weight&Biases tool for logging train and test runs of the STS pipeline. Create an account at https://wandb.ai/site/ and configure credential during the first code run. 
 
-In _Martini et al., 2023_, NSS validation relies on multimodal analysis over both datasets:
+# Reproducing STS pipeline
 
-* **Hard Validation**: A EP and transcriptomic joint and multimodal analysis over _PatchSeqDataset_ 
-* **Soft Validation**: A EP and cell-type-based joint analysis over _PatchClampDataset_ 
+The STS pipeline described in In _Amprimo et al., 2025_, is implemented in source/sts_pipeline.py. The script can be run in three mode:
+* **TRAIN**: This mode allows to retrain a certain configuration of the STS pipeline, by specifying which model pre-trained on ImageNet to leverage as deep feature extractor. 
+* **TEST**: This mode reproduces the classification performance results of the optimal configurations of the STS pipeline reported in the manuscript. 
+* **EXPLAIN**: This mode reproduces the explainability analysis of the optimal configurations of the STS pipeline using saliency maps.
+
+## Data required
+
+In order to reproduce the analysis, it is necessary to gather the scalograms generated from the _PatchSeqDataset_ and the _PatchClampDataset_ considered in this study. The scalograms are available as a Kaggle dataset at 
+https://www.kaggle.com/datasets/smiliesatpolito/STS-data. The dataset contains also the optimal STS configurations trained during the experiment. These steps must be observed:
+
+1) Unzip the best_model folder inside spike-trains-scalograms/models.
+
+2) Unzip the two folders with the scalograms of the two datasets in spike-trains-scalograms/data
 
 
 ## Reproducing the analysis running the STS Singularity container
 
 
-### Testing
+### Running the  STS pipeline
+
+First activate a singularity shell using the constructed container.
+
 ```
 singularity shell --nv ../STS_pytorch.sif
-python3 sts_pipeline.py <model> True
 ```
-model can assume values between 1 and 6, as follow:
+For all modes, the deep feature extractor model must be specified using a _model-no_ parameter that can assume values between **1** and **4**, as follow:
 
 1 - ResNet18
 
-2 - VGG16
+2 -  InceptionV3
 
-3 - Incep_v3
+3 - DenseNet121
 
-4 - MobileNet_v2
+4 - MobileNetV2
 
-5 - DenseNet121
+Moreover, for the **TRAIN** mode, whether to freeze the parameters of the deep feature extractor or let them retrain completely can be selected specifying either the _freeze-level_ parameter with value **FULL** or **NONE**. In _Amprimo et al 2025_ the **NONE** parameter was employed, so the whole deep feature extractor was fine-tuned for the classification task.
 
-6 - DenseNet121-finetuning
-
-
-
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+The generic command to run the STS pipeline on the singularity shell is:
 
 ```
-cd existing_repo
-git remote add origin https://gitlabtsgroup.polito.it/root/spike-trains-scalograms.git
-git branch -M main
-git push -uf origin main
+python sts_pipeline.py model-no mode [freeze-level] 
 ```
 
-## Integrate with your tools
+For instance, to run in **TRAIN** mode the STS pipeline with complete fine-tuning of DenseNet121, run:
 
-- [ ] [Set up project integrations](https://gitlabtsgroup.polito.it/root/spike-trains-scalograms/-/settings/integrations)
+```
+python sts_pipeline.py 3 TRAIN NONE 
+```
 
-## Collaborate with your team
+For simply reproducing the analysis of _Amprimo et al 2025_ for a certain optimal STS pipeline configuration, e.g., the one with InceptionV3, run in **TEST** mode using:
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+```
+python sts_pipeline.py 2 TEST NONE 
+```
 
-## Test and Deploy
+To reproduce the explainability analysis, run in **EXPLAIN** mode using:
 
-Use the built-in continuous integration in GitLab.
+```
+python sts_pipeline.py 2 EXPLAIN NONE 
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Running the baseline LGBM model
 
-***
+To reproduce the baseline shallow model trained on high-level EP features of spike trains, run the baseline_pipeline.py script.
 
-# Editing this README
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```
+python baseline_pipeline.py 
+```
 
-## Suggestions for a good README
+The EP feature for the neurons in the two datasets are obtained from the two csv files in data/Split:
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+1. PatchClamp_EP_features.csv
+2. PatchSeq_EP_features.csv
 
-## Name
-Choose a self-explaining name for your project.
+PatchClamp_EP_features.csv was obtained with a custom script calling the DANDI (https://dandiarchive.org) APIs to access the DANDISET 000020 (https://doi.org/10.48324/dandi.000020/0.210913.1639). This script leverages the `dandi-cli` tool (10.5281/zenodo.3692138) to access raw EP data for each cell and compute EP features.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+	Credits:  Allen Institute for Brain Science (2020). Patch-seq recordings from mouse visual cortex. Available from https://dandiarchive.org/dandiset/000020/ and https://github.com/dandisets/000020.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+	Primary publication: Gouwens, N. W., Sorensen, S. A., Baftizadeh, F., Budzillo, A., Lee, B. R., Jarsky, T., ... & Zeng, H. (2020). Integrated morphoelectric and transcriptomic classification of cortical GABAergic cells. Cell, 183(4), 935-953, https://doi.org/10.1016/j.cell.2020.09.057.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+PatchSeq_EP_features.csv can be downloaded at http://celltypes.brain-map.org/cell_types_specimen_details.csv. 
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+	Credits:  Allen Institute for Brain Science (2023). Cell Types dataset. Available from http://celltypes.brain-map.org/data (DOWNLOAD CELL FEATURE DATA button).
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+	Primary publication: Gouwens, N.W., Sorensen, S.A., Berg, J. et al. Classification of electrophysiological and morphological neuron types in the mouse visual cortex. Nat Neurosci 22, 1182–1195 (2019), https://doi.org/10.1038/s41593-019-0417-0.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Repository structure
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+After retrieving and unzipping the kaggle datasets as described above, the folder and file structure should be as follows
+```
+|
+├── data                                       // Data files
+|    ├── Split                                 // Folder with train-test datasplits and EP features for baseline model
+|    |    ├── PatchSeq_EP_features.csv         // EP features file for EP analysis of the PatchSeqDataset (Credits:  Allen Institute for Brain Science (2020). Patch-seq recordings from mouse visual cortex. Available from https://dandiarchive.org/dandiset/000020/ and https://github.com/dandisets/000020.)
+|    |                            // scRNA-seq data for transcriptomic analysis of the PatchSeqDataset (Credits: Allen Institute for Brain Science (2020). Patch-seq recordings from mouse visual cortex. Available from https://data.nemoarchive.org/other/AIBS/AIBS_patchseq/transcriptome/scell/SMARTseq/processed/analysis/20200611/.)
+|    |	  | 
+|    |    ├── PatchClamp_EP_features.csv        // EP features file for the PatchClampDataset (Credits:  Allen Institute for Brain Science (2023). Allen SDK. Available from https://github.com/alleninstitute/allensdk. Allen Institute for Brain Science (2023). IPFX. Available from https://github.com/alleninstitute/ipfx.)
+|    |    └── Train_split.csv          			// Data to consider as training samples
+|	 |    └── Test_split.csv                    // Data to consider as test samples   
+|	 └── PatchClampGouwensCWT                   // Scalograms for PatchClampDataset  
+|    	  └── ...
+|	 └── PatchSeqGouwensCWT                     // Scalograms for PatchSeqDataset  
+|    	  └── ...   
+├── source                                    	// Scripts for STS pipeline and baseline LGBM model
+|    ├── sts_pipeline.py                        // Python script for running baseline pipeline
+|    └── baseline_pipeline.py         			// Python script for cell lines-based cell type labels analysis
+|   
+│
+├── models                                    	// Optimal deep feature extractor models trained in Amprimo et al. 2025
+|    ├── DenseNet121_best_models				
+|	 │		└── ...                      
+|    └── InceptionV3_best_models         			
+| 	 │		└── ...
+| 	 └── ...
+├── output                                     // Local Output of the STS analysis (e.g., retrained deep feature extractor model)
+|    └── ...                                  
+|    
+└── README.md                                                     // This README file          
+```
