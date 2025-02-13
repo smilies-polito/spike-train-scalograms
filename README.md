@@ -157,8 +157,10 @@ After retrieving and unzipping the kaggle datasets as described above, the folde
 |    |    ├── PatchClamp_EP_features.csv        // EP features file for the PatchClampDataset (Credits:  Allen Institute for Brain Science (2023). Allen SDK. Available from https://github.com/alleninstitute/allensdk. Allen Institute for Brain Science (2023). IPFX. Available from https://github.com/alleninstitute/ipfx.)
 |    |    └── Train_split.csv          			// Data to consider as training samples
 |	 |    └── Test_split.csv                    // Data to consider as test samples   
+|	 |
 |	 └── PatchClampGouwensCWT                   // Scalograms for PatchClampDataset  
-|    	  └── ...
+|    |	  └── ...
+|	 |
 |	 └── PatchSeqGouwensCWT                     // Scalograms for PatchSeqDataset  
 |    	  └── ...   
 ├── source                                    	// Scripts for STS pipeline and baseline LGBM model
