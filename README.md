@@ -1,4 +1,4 @@
-# spike-trains-scalograms
+# spike-train-scalograms
 This repository contains the code of the Spike Train Scalograms (STS) pipeline for neuronal cell types classification. The STS pipeline combines fine-tuned Convolutional Neural Networks (CNN) with scalograms of spike trains obtained through Continuous Wavelet Transform (CWT) to classify neurons from raw Electrophysiological (EP) recordings rather than human-knowledge-based features.
 
 ## Release notes
@@ -38,17 +38,17 @@ Follow these steps to setup for reproducing the experiments provided in _Amprimo
 	* Install dependencies from: https://docs.sylabs.io/guides/main/admin-guide/installation.html
 2) Clone the STS repository in your home folder
 ```
-git clone https://github.com/smilies-polito/spike-trains-scalograms.git
+git clone https://github.com/smilies-polito/spike-train-scalograms.git
 ```
 
 3) Move to the spike-train-scalograms source subfolder, and build the singularity container with 
 ```
-cd spike-trains-scalograms/source
+cd spike-train-scalograms/source
 sudo singularity build STS.sif STS.def
 ```
 or
 ```
-cd spike-trains-scalograms/source
+cd spike-train-scalograms/source
 singularity build --fakeroot STS.sif STS.def
 ```
 
@@ -66,9 +66,9 @@ The STS pipeline described in In _Amprimo et al., 2025_, is implemented in sourc
 In order to reproduce the analysis, it is necessary to gather the scalograms generated from the _PatchSeqDataset_ and the _PatchClampDataset_ considered in this study. The scalograms are available as a Kaggle dataset at 
 https://www.kaggle.com/datasets/smiliesatpolito/STS-data. The dataset contains also the optimal STS configurations trained during the experiment. These steps must be observed:
 
-1) Unzip the best_model folder inside spike-trains-scalograms/models.
+1) Unzip the best_model folder inside spike-train-scalograms/models.
 
-2) Unzip the two folders with the scalograms of the two datasets in spike-trains-scalograms/data
+2) Unzip the two folders with the scalograms of the two datasets in spike-train-scalograms/data
 
 
 ## Reproducing the analysis running the STS Singularity container
