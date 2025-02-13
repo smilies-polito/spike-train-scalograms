@@ -150,32 +150,43 @@ After retrieving and unzipping the kaggle datasets as described above, the folde
 ```
 |
 ├── data                                       // Data files
-|    ├── Split                                 // Folder with train-test datasplits and EP features for baseline model
-|    |    ├── PatchSeq_EP_features.csv         // EP features file for EP analysis of the PatchSeqDataset (Credits:  Allen Institute for Brain Science (2020). Patch-seq recordings from mouse visual cortex. Available from https://dandiarchive.org/dandiset/000020/ and https://github.com/dandisets/000020.)
-|    |                            // scRNA-seq data for transcriptomic analysis of the PatchSeqDataset (Credits: Allen Institute for Brain Science (2020). Patch-seq recordings from mouse visual cortex. Available from https://data.nemoarchive.org/other/AIBS/AIBS_patchseq/transcriptome/scell/SMARTseq/processed/analysis/20200611/.)
-|    |	  | 
-|    |    ├── PatchClamp_EP_features.csv        // EP features file for the PatchClampDataset (Credits:  Allen Institute for Brain Science (2023). Allen SDK. Available from https://github.com/alleninstitute/allensdk. Allen Institute for Brain Science (2023). IPFX. Available from https://github.com/alleninstitute/ipfx.)
-|    |    └── Train_split.csv          			// Data to consider as training samples
-|	 |    └── Test_split.csv                    // Data to consider as test samples   
-|	 |
-|	 └── PatchClampGouwensCWT                   // Scalograms for PatchClampDataset  
-|    |	  └── ...
-|	 |
-|	 └── PatchSeqGouwensCWT                     // Scalograms for PatchSeqDataset  
-|    	  └── ...   
-├── source                                    	// Scripts for STS pipeline and baseline LGBM model
-|    ├── sts_pipeline.py                        // Python script for running baseline pipeline
-|    └── baseline_pipeline.py         			// Python script for cell lines-based cell type labels analysis
-|   
+│    ├── Split                                 // Folder with train-test data splits and EP features for the baseline model
+│    │    ├── PatchSeq_EP_features.csv         // EP features file for EP analysis of the PatchSeqDataset
+│    │    │                                    // (Credits: Allen Institute for Brain Science (2020). 
+│    │    │                                    // Patch-seq recordings from mouse visual cortex.
+│    │    │                                    // Available from: 
+│    │    │                                    // https://dandiarchive.org/dandiset/000020/
+│    │    │                                    // https://github.com/dandisets/000020.)
+│    │    │
+│    │    ├── PatchClamp_EP_features.csv       // EP features file for the PatchClampDataset
+│    │    │                                    // (Credits: Allen Institute for Brain Science (2023). 
+│    │    │                                    // Allen SDK: https://github.com/alleninstitute/allensdk
+│    │    │                                    // IPFX: https://github.com/alleninstitute/ipfx.)
+│    │    │
+│    │    ├── Train_split.csv                  // Data to consider as training samples
+│    │    └── Test_split.csv                   // Data to consider as test samples   
+│    │
+│    ├── PatchClampGouwensCWT                  // Scalograms for PatchClampDataset  
+│    │    └── ...
+│    │
+│    └── PatchSeqGouwensCWT                    // Scalograms for PatchSeqDataset  
+│         └── ...   
 │
-├── models                                    	// Optimal deep feature extractor models trained in Amprimo et al. 2025
-|    ├── DenseNet121_best_models				
-|	 │		└── ...                      
-|    └── InceptionV3_best_models         			
-| 	 │		└── ...
-| 	 └── ...
-├── output                                     // Local Output of the STS analysis (e.g., retrained deep feature extractor model)
-|    └── ...                                  
-|    
-└── README.md                                                     // This README file          
+├── source                                     // Scripts for STS pipeline and baseline LGBM model
+│    ├── sts_pipeline.py                       // Python script for running the baseline pipeline
+│    └── baseline_pipeline.py                  // Python script for cell line-based cell type label analysis
+│
+├── models                                     // Optimal deep feature extractor models trained in Amprimo et al. 2025
+│    ├── DenseNet121_best_models				
+│    │    └── ...                      
+│    ├── InceptionV3_best_models         			
+│    │    └── ...
+│    └── ...
+│
+├── output                                     // Local output of the STS analysis (e.g., retrained deep feature extractor model)
+│    └── ...                                  
+│
+└── README.md                                  // This README file          
+
 ```
+
