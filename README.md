@@ -169,8 +169,10 @@ After retrieving and unzipping the kaggle datasets as described above, the folde
 │    ├── PatchClampGouwensCWT                  // Scalograms for PatchClampDataset  
 │    │    └── ...
 │    │
-│    └── PatchSeqGouwensCWT                    // Scalograms for PatchSeqDataset  
-│         └── ...   
+│    ├── PatchSeqGouwensCWT                    // Scalograms for PatchSeqDataset  
+│    │    └── ...   
+│    │
+│    └── cell_types_GouwensAll_new.txt         // Neuronal type labels for cells in both datasets
 │
 ├── source                                     // Scripts for STS pipeline and baseline LGBM model
 │    ├── sts_pipeline.py                       // Python script for running the baseline pipeline
@@ -186,7 +188,7 @@ After retrieving and unzipping the kaggle datasets as described above, the folde
 ├── output                                     // Local output of the STS analysis (e.g., retrained deep feature extractor model)
 │    └── ...                                  
 │
-└── README.md                                  // This README file          
+└── README.md                                  // This README file                 
 
 ```
 
